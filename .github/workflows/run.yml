@@ -1,0 +1,27 @@
+name: IraqNews Bot
+
+on:
+  workflow_dispatch:        # تشغيل يدوي من واجهة GitHub
+  schedule:
+    - cron: "*/15 * * * *"  # تشغيل كل 15 دقيقة
+
+jobs:
+  run-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install requirements
+        run: pip install -r requirements.txt
+
+      - name: Run bot
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+        run: python news_bot.py --once
